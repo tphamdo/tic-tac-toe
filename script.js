@@ -7,7 +7,7 @@ var gameboard = (function() {
             return false;
         }
         if (board[y][x] !== ' ') {
-            console.error(`Can not place on spot (${x},${y}). Spot already has a ${board[x][y]}`)
+            console.error(`Can not place on spot (${x},${y}). Spot already has a ${board[y][x]}`)
             return false;
         }
         board[y][x] = marker;
@@ -56,6 +56,7 @@ var gameboard = (function() {
 var game = (function() {
     let player1Turn = true;
     let gameOver = false;
+    let movesMade = 0;
    
     function makeMove(x, y, marker) {
         if (gameOver) {
@@ -69,8 +70,17 @@ var game = (function() {
         }
 
         if (gameboard.makeMove(x,y,marker)) {
+            ++movesMade;
+
             if (isWinner(marker)) {
                 console.log(`Game over! Player${player1Turn? '1' : '2'} won!`);
+                gameOver = true;
+                return;
+            }
+
+            if (movesMade === 9) {
+                console.log(`Game over! It's a tie.`);
+                gameOver = true;
                 return;
             }
 
@@ -82,16 +92,11 @@ var game = (function() {
         gameboard.reset()
         player1Turn = true;
         gameOver = false;
+        movesMade = 0;
     }
 
     function isWinner(marker) {
-        let winner = false;
-        if (gameboard.isWinner(marker)) {
-            winner = true;
-            gameOver = true;
-        }
-
-        return winner;
+        return gameboard.isWinner(marker)
     }
 
     return { makeMove, reset };
