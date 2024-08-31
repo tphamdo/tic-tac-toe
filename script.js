@@ -115,3 +115,9 @@ var player2 = {
         game.makeMove(x,y,this.marker);
     }
 }
+
+const template = document.getElementById('template').innerHTML;
+const rendered = Mustache.render(template, { t0_0 : 'X', t1_0: 'O', t2_0: 'X' });
+
+document.getElementById('target').innerHTML = rendered;
+

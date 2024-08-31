@@ -1,0 +1,23 @@
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; 
+}
+
+.gameboard {
+  display: grid;
+  width: 500px;
+  height: 500px;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  grid-gap: 10px;
+}
+
+.tile {
+  background-color: red;
+  font-size: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
