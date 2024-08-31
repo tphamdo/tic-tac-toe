@@ -5,7 +5,7 @@ body {
   min-height: 100vh; 
 }
 
-.gameboard {
+#gameboard {
   display: grid;
   width: 500px;
   height: 500px;
