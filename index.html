@@ -9,6 +9,9 @@
     <!-- <div id="gameboard">Loading...</div> -->
     <div class="main-container">
       <div class="header">
+        <h1>Tic-Tac-Toe</h1>
+      </div>
+      <div class="messages">
         <div id="message">
           <script id="turn-message-template" type="x-tmpl-mustache">
             <p class="turn-message">{{ playerName }}&#39;s turn</p>
@@ -17,6 +20,7 @@
             <p class="game-message">{{ message }}</p>
           </script>
         </div>
+        <button id="restart">Restart</button>
       </div>
       <div id="gameboard">
         <script id="gameboard-template" type="x-tmpl-mustache">
@@ -30,13 +34,6 @@
             <div class="tile">{{ 7 }}</div>
             <div class="tile">{{ 8 }}</div>
         </script>
-      </div>
-      <div class="footer">
-        <div class="result">
-          <script id="result-template" type="x-tmpl-mustache">
-            {{ result }}
-          </script>
-        </div>
       </div>
     </div>
     <script src="https://unpkg.com/mustache@latest"></script>

@@ -1,21 +1,23 @@
+
+
 var pubSub = (function() {
-    var listeners = {};
+    let events = {};
 
     function publish(eventName, data) {
-        if (listeners[eventName]) {
-            listeners[eventName].forEach(function(fn) {
+        if (events[eventName]) {
+            events[eventName].forEach(function(fn) {
                 fn(data);
             });
         }
     }
 
     function subscribe(eventName, fn) {
-        listeners[eventName] = listeners[eventName] || [];
-        listeners[eventName].push(fn);
+        events[eventName] = events[eventName] || [];
+        events[eventName].push(fn);
     }
 
     function unsubscribe(eventName, fn) {
-        var subscriptions = listeners[eventName]
+        var subscriptions = events[eventName]
         if (subscriptions) {
             for (let i=0; i<subscriptions.length; ++i) {
                 if (subscriptions[i] === fn) {
@@ -26,9 +28,8 @@ var pubSub = (function() {
         }
     }
 
-    return { publish, subscribe, unsubscribe };
+    return { publish: publish, subscribe: subscribe, unsubscribe: unsubscribe };
 })();
-
 var gameboard = (function() {
     var _board = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']];
 
@@ -38,7 +39,6 @@ var gameboard = (function() {
     const $gameboard = document.getElementById('gameboard');
 
     _render();
-    pubSub.publish("game-restarted");
 
     function makeMove(x, y, marker) {
         if (x<0 || y<0 || x>2 || y>2) {
@@ -59,6 +59,14 @@ var gameboard = (function() {
     function _render() {
         const rendered = Mustache.render($gameboardTemplate, { ..._board.flat() })
         $gameboard.innerHTML = rendered;
+
+        var $tiles = document.querySelectorAll('.tile');
+
+        for(let i=0; i<$tiles.length; i++){
+            $tiles[i].onclick = function() {
+                game.makeMove(i%3, Math.floor(i/3));
+            };
+        }
     }
 
     function _renderOneTile(x, y, marker) {
@@ -71,7 +79,7 @@ var gameboard = (function() {
                 _board[y][x] = ' ';
             }
         }
-        pubSub.publish("game-restarted");
+        _render();
     }
 
     function isWinner(marker) {
@@ -105,17 +113,16 @@ var gameboard = (function() {
 })();
 
 var game = (function() {
+    console.log("inside game");
     let player1Turn = true;
     let gameOver = false;
     let movesMade = 0;
-
     let player1 = {
         marker: 'O',
         makeMove: function(x,y) {
             _makeMove(x,y,this.marker);
         }
     }
-
     let player2 = {
         marker: 'X',
         makeMove: function(x,y) {
@@ -123,12 +130,7 @@ var game = (function() {
         }
     }
 
-    var tiles = document.querySelectorAll('.tile');
-    for(let i=0; i<tiles.length; i++){
-        tiles[i].onclick = function() {
-            makeMove(i%3, Math.floor(i/3));
-        };
-    }
+    pubSub.publish("game-restarted");
 
     function makeMove(x,y) {
         if (player1Turn) player1.makeMove(x,y);
@@ -168,6 +170,7 @@ var game = (function() {
         player1Turn = true;
         gameOver = false;
         movesMade = 0;
+        pubSub.publish("game-restarted");
     }
 
     function isWinner(marker) {
@@ -203,4 +206,10 @@ var message = (function() {
         $message.innerHTML = rendered;
     }
 
+})();
+
+var restart = (function() {
+    var $restart = document.querySelector('#restart');
+
+    $restart.onclick = game.reset;
 })();

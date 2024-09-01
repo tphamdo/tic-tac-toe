@@ -1,3 +1,13 @@
+* {
+  margin: 0;
+}
+
+*,
+::before,
+::after {
+  box-sizing: border-box;
+}
+
 body {
   display: flex;
   justify-content: center;
@@ -10,21 +20,46 @@ body {
   letter-spacing: .2rem;
 }
 
-.main-container {
+h1 {
+  font-size: 3rem;
+}
+.header {
+  padding: 24px 0;
+  text-align: center;
+  margin-bottom: 16px;
+}
+
+.messages {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
 }
 
 #message {
-  font-size: 20px;
+  font-size: 24px;
   /* transform: translateX(0.50px); */
+}
+
+button {
+  border: none;
+  background-color: inherit;
+  color: inherit;
+  font: inherit;
+  font-size: 24px;
+  letter-spacing: inherit;
+  cursor: pointer;
+  outline: none;
 }
 
 #gameboard {
   display: grid;
-  width: 500px;
-  height: 500px;
+  width: 600px;
+  height: 600px;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 1fr 1fr 1fr;
   grid-gap: 10px;
+  margin-bottom: 24px;
 }
 
 .tile {
