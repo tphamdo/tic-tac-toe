@@ -28,7 +28,7 @@ var pubSub = (function() {
         }
     }
 
-    return { publish: publish, subscribe: subscribe, unsubscribe: unsubscribe };
+    return { publish, subscribe, unsubscribe };
 })();
 var gameboard = (function() {
     var _board = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']];
