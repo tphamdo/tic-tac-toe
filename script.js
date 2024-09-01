@@ -2,20 +2,14 @@ var pubSub = (function() {
     var listeners = {};
 
     function publish(eventName, data) {
-        console.log("publish");
-        console.log(eventName);
         if (listeners[eventName]) {
-            console.log(eventName);
             listeners[eventName].forEach(function(fn) {
-                console.log(fn);
-                console.log(data);
                 fn(data);
             });
         }
     }
 
     function subscribe(eventName, fn) {
-        console.log("subscribe");
         listeners[eventName] = listeners[eventName] || [];
         listeners[eventName].push(fn);
     }
@@ -47,7 +41,6 @@ var gameboard = (function() {
     pubSub.publish("game-restarted");
 
     function makeMove(x, y, marker) {
-        console.log(_board);
         if (x<0 || y<0 || x>2 || y>2) {
             console.error(`(x,y) must be between (0,0) and (2,2).
                 Got (${x}, ${y}) instead`);
@@ -69,7 +62,6 @@ var gameboard = (function() {
     }
 
     function _renderOneTile(x, y, marker) {
-        console.log($gameboard.children);
         $gameboard.children[x+3*y].textContent = marker;
     }
 
@@ -133,23 +125,19 @@ var game = (function() {
 
     var tiles = document.querySelectorAll('.tile');
     for(let i=0; i<tiles.length; i++){
-        console.log(tiles[i]);
         tiles[i].onclick = function() {
-            console.log('onclick');
             makeMove(i%3, Math.floor(i/3));
-            console.log('onclick2');
         };
     }
 
     function makeMove(x,y) {
-        console.log(x,y);
         if (player1Turn) player1.makeMove(x,y);
         else player2.makeMove(x,y);
     }
 
     function _makeMove(x, y, marker) {
         if (gameOver) {
-            console.error(`The game is over`)
+            console.error(`Can't make move. The game is over`)
             return;
         }
 
@@ -164,8 +152,7 @@ var game = (function() {
             }
 
             if (movesMade === 9) {
-                console.log(`Game over! It's a tie.`);
-                pubSub.publish("game-over", `Game over! It's a tie.`);
+                pubSub.publish("game-over", `Game over. It's a tie!`);
                 gameOver = true;
                 return;
             }
@@ -203,7 +190,6 @@ var message = (function() {
     pubSub.subscribe("turn-played", _renderTurnMessage);
     pubSub.subscribe("game-restarted", _renderTurnMessage);
     function _renderTurnMessage(playerName) {
-        console.log("rendering....");
         if (!playerName) playerName = "Player 1";
         const rendered = Mustache.render($turnMessageTemplate,
             { playerName })
