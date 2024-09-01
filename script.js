@@ -1,5 +1,3 @@
-
-
 var pubSub = (function() {
     let events = {};
 
