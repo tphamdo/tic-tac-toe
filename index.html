@@ -7,31 +7,36 @@
   </head>
   <body>
     <!-- <div id="gameboard">Loading...</div> -->
-    <div class="header">
-      <div class="turn">
-        <script id="turn-template" type="x-tmpl-mustache">
-          <p>It&#39;s {{ player }}&#39;s turn</p>
+    <div class="main-container">
+      <div class="header">
+        <div id="message">
+          <script id="turn-message-template" type="x-tmpl-mustache">
+            <p class="turn-message">{{ playerName }}&#39;s turn</p>
+          </script>
+          <script id="game-message-template" type="x-tmpl-mustache">
+            <p class="game-message">{{ message }}</p>
+          </script>
+        </div>
+      </div>
+      <div id="gameboard">
+        <script id="gameboard-template" type="x-tmpl-mustache">
+            <div class="tile">{{ 0 }}</div>
+            <div class="tile">{{ 1 }}</div>
+            <div class="tile">{{ 2 }}</div>
+            <div class="tile">{{ 3 }}</div>
+            <div class="tile">{{ 4 }}</div>
+            <div class="tile">{{ 5 }}</div>
+            <div class="tile">{{ 6 }}</div>
+            <div class="tile">{{ 7 }}</div>
+            <div class="tile">{{ 8 }}</div>
         </script>
       </div>
-    </div>
-    <div id="gameboard">
-      <script id="gameboard-template" type="x-tmpl-mustache">
-          <div class="tile">{{ 0 }}</div>
-          <div class="tile">{{ 1 }}</div>
-          <div class="tile">{{ 2 }}</div>
-          <div class="tile">{{ 3 }}</div>
-          <div class="tile">{{ 4 }}</div>
-          <div class="tile">{{ 5 }}</div>
-          <div class="tile">{{ 6 }}</div>
-          <div class="tile">{{ 7 }}</div>
-          <div class="tile">{{ 8 }}</div>
-      </script>
-    </div>
-    <div class="footer">
-      <div class="result">
-        <script id="result-template" type="x-tmpl-mustache">
-          {{ result }}
-        </script>
+      <div class="footer">
+        <div class="result">
+          <script id="result-template" type="x-tmpl-mustache">
+            {{ result }}
+          </script>
+        </div>
       </div>
     </div>
     <script src="https://unpkg.com/mustache@latest"></script>

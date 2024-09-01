@@ -1,3 +1,40 @@
+var pubSub = (function() {
+    var listeners = {};
+
+    function publish(eventName, data) {
+        console.log("publish");
+        console.log(eventName);
+        if (listeners[eventName]) {
+            console.log(eventName);
+            listeners[eventName].forEach(function(fn) {
+                console.log(fn);
+                console.log(data);
+                fn(data);
+            });
+        }
+    }
+
+    function subscribe(eventName, fn) {
+        console.log("subscribe");
+        listeners[eventName] = listeners[eventName] || [];
+        listeners[eventName].push(fn);
+    }
+
+    function unsubscribe(eventName, fn) {
+        var subscriptions = listeners[eventName]
+        if (subscriptions) {
+            for (let i=0; i<subscriptions.length; ++i) {
+                if (subscriptions[i] === fn) {
+                    subscriptions.splice(i,1);
+                    break;
+                }
+            }
+        }
+    }
+
+    return { publish, subscribe, unsubscribe };
+})();
+
 var gameboard = (function() {
     var _board = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']];
 
@@ -7,6 +44,7 @@ var gameboard = (function() {
     const $gameboard = document.getElementById('gameboard');
 
     _render();
+    pubSub.publish("game-restarted");
 
     function makeMove(x, y, marker) {
         console.log(_board);
@@ -41,6 +79,7 @@ var gameboard = (function() {
                 _board[y][x] = ' ';
             }
         }
+        pubSub.publish("game-restarted");
     }
 
     function isWinner(marker) {
@@ -118,21 +157,23 @@ var game = (function() {
             ++movesMade;
 
             if (isWinner(marker)) {
-                console.log(`Game over! Player${player1Turn? '1' : '2'} won!`);
+                let winner = player1Turn? 'Player 1' : 'Player 2';
+                pubSub.publish("game-over", `Game over. ${winner} won!`);
                 gameOver = true;
                 return;
             }
 
             if (movesMade === 9) {
                 console.log(`Game over! It's a tie.`);
+                pubSub.publish("game-over", `Game over! It's a tie.`);
                 gameOver = true;
                 return;
             }
 
             player1Turn = !player1Turn;
-            // console.log(player1Turn, movesMade, gameOver);
+            pubSub.publish("turn-played",
+                player1Turn? "Player 1" : "Player 2");
         }
-        // console.log(player1Turn, movesMade, gameOver);
     }
 
     function reset() {
@@ -149,35 +190,31 @@ var game = (function() {
     return { makeMove, reset };
 })();
 
-var pubSub = (function() {
-    var listeners = {};
 
-    function publish(eventName, data) {
-        if (listeners[eventName]) {
-            listeners[eventName].forEach(fn => {
-                fn(data);
-            });
-        }
+var message = (function() {
+    // cache dom
+    const $turnMessageTemplate =
+        document.getElementById('turn-message-template').innerHTML;
+    const $gameMessageTemplate =
+        document.getElementById('game-message-template').innerHTML;
+    const $message = document.getElementById('message');
+
+    _renderTurnMessage();
+    pubSub.subscribe("turn-played", _renderTurnMessage);
+    pubSub.subscribe("game-restarted", _renderTurnMessage);
+    function _renderTurnMessage(playerName) {
+        console.log("rendering....");
+        if (!playerName) playerName = "Player 1";
+        const rendered = Mustache.render($turnMessageTemplate,
+            { playerName })
+        $message.innerHTML = rendered;
     }
 
-    function subscribe(eventName, fn) {
-        if (!listeners[eventName]) {
-            listeners[eventName] = [];
-        }
-        listeners[eventName].append(fn);
+    pubSub.subscribe("game-over", _renderGameMessage);
+    function _renderGameMessage(message) {
+        const rendered = Mustache.render($gameMessageTemplate,
+            { message });
+        $message.innerHTML = rendered;
     }
 
-    function unsubscribe(eventName, fn) {
-        var subscriptions = listeners[eventName]
-        if (subscriptions) {
-            for (let i=0; i<subscriptions.length; ++i) {
-                if (subscriptions[i] === fn) {
-                    subscriptions.splice(i,1);
-                    break;
-                }
-            }
-        }
-    }
-
-    return { publish, subscribe, unsubscribe };
-});
+})();
