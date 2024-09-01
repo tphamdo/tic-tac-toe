@@ -28,6 +28,7 @@ var pubSub = (function() {
 
     return { publish, subscribe, unsubscribe };
 })();
+
 var gameboard = (function() {
     var _board = [[' ',' ',' '],[' ',' ',' '],[' ',' ',' ']];
 
@@ -177,7 +178,6 @@ var game = (function() {
 
     return { makeMove, reset };
 })();
-
 
 var message = (function() {
     // cache dom
