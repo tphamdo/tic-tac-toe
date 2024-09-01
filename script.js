@@ -36,6 +36,8 @@ var gameboard = (function() {
     const $gameboardTemplate =
         document.getElementById('gameboard-template').innerHTML;
     const $gameboard = document.getElementById('gameboard');
+    const $tiles = document.querySelectorAll('.tile');
+
 
     _render();
 
@@ -58,8 +60,6 @@ var gameboard = (function() {
     function _render() {
         const rendered = Mustache.render($gameboardTemplate, { ..._board.flat() })
         $gameboard.innerHTML = rendered;
-
-        var $tiles = document.querySelectorAll('.tile');
 
         for(let i=0; i<$tiles.length; i++){
             $tiles[i].onclick = function() {
